@@ -3,5 +3,5 @@ const dotenv = require('dotenv').config();
 const app = express();
 const port = process.env.PORT;
 app.listen(port,()=>{
-    console.log('server runs on 3000');
+    console.log('server runs on 3000 with very beautiful way');
 })
