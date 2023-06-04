@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv').config();
 const app = express();
 app.get('/',(req,res)=>[
-   res.send('started with pm2')
+   res.send('started with pm2 and new way')
 ])
 const port = process.env.PORT;
 app.listen(port,()=>{
