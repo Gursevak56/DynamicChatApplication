@@ -12,8 +12,7 @@ const app = express();
 app.get('/',(req,res)=>{
     res.send(process.env.DB_URL)
 })
-const port = 3000;
-// const host = "65.1.73.93"
-app.listen(port,()=>{
+const port = process.env.PORT;
+ app.listen(port,()=>{
     console.log(`server runs on ${port} with very beautiful way`);
 })
