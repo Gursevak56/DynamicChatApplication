@@ -10,12 +10,10 @@ const app = express();
 //     console.log(err.message);
 // })
 app.get('/',(req,res)=>{
-    res.send('started')
+    res.send(process.env.DB_URL)
 })
 const port = process.env.PORT
 const host = process.env.HOST
 app.listen(port,host,()=>{
     console.log('server runs on 3000 with very beautiful way');
-}).catch(err=>{
-    console.log(err.message)
 })
