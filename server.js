@@ -16,4 +16,6 @@ const port = process.env.PORT
 const host = process.env.HOST
 app.listen(port,host,()=>{
     console.log('server runs on 3000 with very beautiful way');
+}).catch(err=>{
+    console.log(err.message)
 })
