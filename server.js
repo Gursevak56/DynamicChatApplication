@@ -9,6 +9,9 @@ const app = express();
 // }).catch(err=>{
 //     console.log(err.message);
 // })
+app.get('/',(req,res)=>{
+    res.send('started')
+})
 const port = process.env.PORT
 const host = process.env.HOST
 app.listen(port,host,()=>{
