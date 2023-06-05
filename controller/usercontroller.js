@@ -10,6 +10,7 @@ module.exports={
     },
     register: async (req,res)=>{
         try {
+            console.log(req.body)
             const password = await securepass.hashpassword(req.body.password);
             const checkuser = await User.findOne({email:req.body.email});
             if(!checkuser){
@@ -30,5 +31,44 @@ module.exports={
             console.log(error.message)
         }
         
+    },
+    loadlogin: async (req,res)=>{
+        try {
+            res.render('login',{message:''})
+        } catch (error) {
+            console.log(error.message)
+        }
+    },
+    login:async (req,res)=>{
+      try {
+        console.log(req.body)
+        const user = await User.findOne({email:req.body.email});
+        if(!user){
+            res.render('login',{message:"user and password are incorrect"});
+        }
+        const passwordcheck = await securepass.comparepass(req.body.password,user.password);
+        if(!passwordcheck){
+            res.render('login',{message:"password and email are incorrect"});
+        }
+        req.session.user = user;
+        res.redirect('/dashboard');
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    logout: async (req,res)=>{
+        try {
+            req.session.destroy();
+            res.redirect('/');
+        } catch (error) {
+            console.log(error.message)
+        }
+    },
+    dashboard: async (req,res)=>{
+        try {
+            res.render('dasboard',{user:req.session.user})
+        } catch (error) {
+            console.log(error.message)
+        }
     }
 }
