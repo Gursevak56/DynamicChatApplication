@@ -1,5 +1,6 @@
 const User = require('./../models/userModel');
 const securepass = require('./../middlewares/securepassword');
+
 module.exports={
     registerload: async (req,res)=>{
         try {

@@ -4,6 +4,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path')
 const usercontroller = require('./../controller/usercontroller');
+const auth = require('./../middlewares/auth');
 router.use(bodyparser.urlencoded({extended:true}))
 router.use(bodyparser.json())
 const storage = multer.diskStorage({
@@ -17,12 +18,12 @@ const storage = multer.diskStorage({
             }
 })
 const upload = multer({storage:storage})
-router.get('/register',usercontroller.registerload)
+router.get('/register',auth.isLogout,usercontroller.registerload)
 router.post('/register',upload.single('image'),usercontroller.register)
-router.get('/',usercontroller.loadlogin)
+router.get('/',auth.isLogout,usercontroller.loadlogin)
 router.post('/login',usercontroller.login)
-router.get('/logout',usercontroller.logout)
-router.get('/dashboard',usercontroller.dashboard)
+router.get('/logout',auth.isLogin,usercontroller.logout)
+router.get('/dashboard',auth.isLogin,usercontroller.dashboard)
 router.all('*',(req,res)=>{
 res.redirect('/');    
 })
