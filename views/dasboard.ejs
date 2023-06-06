@@ -28,6 +28,11 @@
             </div>
     </div>
     <script>
+        var socket = io('/user-namespace',{
+            auth:{
+                token:'<%= user._id %>'
+            }
+        })
     $('Document').ready(function(){
         $('.list-group').click(function(){
             $('.start-head').hide();
