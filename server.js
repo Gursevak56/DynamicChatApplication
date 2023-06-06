@@ -36,12 +36,12 @@ usb.on('connection',async function(socket){
     console.log('user connected')
     const sender_id = socket.handshake.auth.token;
     const useronline = await User.findByIdAndUpdate({_id:sender_id},{$set:{isonline:1}});
-    console.log(useronline.name+"online")
+    socket.broadcast.emit('onlineuser',{userid:useronline._id});
     socket.on('disconnect',async function(){
         console.log('user disconnected')
         const onlineuserid = socket.handshake.auth.token;
         const oflineuser = await User.findByIdAndUpdate({_id:onlineuserid},{$set:{isonline:0}})
-        console.log(oflineuser.name+"oflline")
+        socket.broadcast.emit('offlineuser',{userid:onlineuserid});
     })
 })
  server.listen(port,()=>{
