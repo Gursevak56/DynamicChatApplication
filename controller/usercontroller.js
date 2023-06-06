@@ -51,8 +51,10 @@ module.exports={
         if(!passwordcheck){
             res.render('login',{message:"password and email are incorrect"});
         }
+        else{
         req.session.user = user;
         res.redirect('/dashboard');
+        }
       } catch (error) {
         console.log(error);
       }
@@ -67,7 +69,8 @@ module.exports={
     },
     dashboard: async (req,res)=>{
         try {
-            res.render('dasboard',{user:req.session.user})
+            const users = await User.find({_id:{$nin:[req.session.user._id]}})
+            res.render('dasboard',{user:req.session.user,users:users})
         } catch (error) {
             console.log(error.message)
         }
