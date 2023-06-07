@@ -56,7 +56,6 @@
       $('.chat-section').show();
       let userid = $(this).attr('data-id');
       recieverid = userid;
-      alert(recieverid)
     });
   });
   socket.on('onlineuser', function(data) {
@@ -88,10 +87,18 @@
                 <h5>` + chat + `</h5>
                 </div>`
         $('#chat-container').append(html)
+        socket.emit('newchat',response);
       } else {
 
       }
     })
+  })
+  socket.on('loadnewchat',function(data){
+    let chat = data.chat;
+    let html = `<div class="dynamic-user">
+            <h5>`+chat+`</h5>
+        </div>`
+        $('#chat-container').append(html)
   })
 </script>
 <%- include('layouts/footer.ejs')  %>

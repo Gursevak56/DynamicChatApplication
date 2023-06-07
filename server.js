@@ -37,6 +37,10 @@ usb.on('connection',async function(socket){
     const sender_id = socket.handshake.auth.token;
     const useronline = await User.findByIdAndUpdate({_id:sender_id},{$set:{isonline:1}});
     socket.broadcast.emit('onlineuser',{userid:useronline._id});
+    //chating 
+    socket.on('newchat',function(data){
+        socket.broadcast.emit('loadnewchat',data)
+    })
     socket.on('disconnect',async function(){
         console.log('user disconnected')
         const onlineuserid = socket.handshake.auth.token;
