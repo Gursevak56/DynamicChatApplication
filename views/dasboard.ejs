@@ -1,66 +1,97 @@
 <%- include('layouts/header.ejs')  %>
-    <h2 class="mb-4"><%= user.name  %></h2>
-    <div class="row">
-        <div class="col-md-3">
-            <ul class="list-group">
-                <% if (users.length>0) { %>
-                 <% for (let i = 0; i < users.length; i++) {
+<h2 class="mb-4"><%= user.name  %></h2>
+<div class="row">
+  <div class="col-md-3">
+    <ul class="list-group">
+      <% if (users.length>0) { %>
+      <% for (let i = 0; i < users.length; i++) {
                     %>
-                    <li class="list-group-item list-group-item-dark cursor-pointer user-list">
-                        <img src="<%= 'userimages/'+users[i]['image']%>" alt="" width="50px" height="50px">
-                        <%= users[i]['name']%>
-                        <% 
+      <li class="list-group-item list-group-item-dark cursor-pointer user-list" data-id="<%= users[i]['_id']%>">
+        <img src="<%= 'userimages/'+users[i]['image']%>" alt="" width="50px" height="50px">
+        <%= users[i]['name']%>
+        <% 
                         if(users[i]['isonline'] == 1){
                             %>
-                            <sup class="online-status" id="<%= users[i]['_id'] %>-status">online</sup>
-                            <%
+        <sup class="online-status" id="<%= users[i]['_id'] %>-status">online</sup>
+        <%
                         }
                         else{
                             %>
-                            <sup class="offline-status" id="<% users[i]['_id'] %>-status">Offline</sup>
-                            <%
+        <sup class="offline-status" id="<% users[i]['_id'] %>-status">Offline</sup>
+        <%
                         }
                         %>
-                        </li>
-                    <%
+      </li>
+      <%
                     
                  } %>
-                <% } %>
-            </ul>
-        </div>
-        <div class="col-md-9">
-            <h3 class="start-head">click to start chat</h3>
-            <div class="chat-section">
-                <div id="chat-container"></div>
-                <form action="" id="chat-form">
-                <input type="text" name="message" id="message" placeholder="Enter a message" required class="border">
-                <input type="submit" value="Send" class="btn btn-primary">    
-                </form>
-                </div>
-            </div>
+      <% } %>
+    </ul>
+  </div>
+  <div class="col-md-9">
+    <h3 class="start-head">click to start chat</h3>
+    <div class="chat-section">
+      <div id="chat-container">
+
+
+      </div>
+      <form action="" id="chat-form">
+        <input type="text" name="message" id="message" placeholder="Enter a message" required class="border">
+        <input type="submit" value="Send" class="btn btn-primary">
+      </form>
     </div>
-    <script>
-        var socket = io('/user-namespace',{
-            auth:{
-                token:'<%= user._id %>'
-            }
-        })
-    $('Document').ready(function(){
-        $('.list-group').click(function(){
-            $('.start-head').hide();
-            $('.chat-section').show();
-        })
-        socket.on('onlineuser',function(data){
-            $('#'+data.userid+'-status').text('online');
-            $('#'+data.userid+'-status').removeClass('offline-status');
-            $('#'+data.userid+'-status').addClass('online-status');
-        })
-        socket.on('offlineuser',function(data){
-            $('#'+data.userid+'-status').text('Offline');
-            $('#'+data.userid+'-status').removeClass('online-status');
-            $('#'+data.userid+'-status').addClass('offline-status');
-        })
-    })    
-    </script>
-  <%- include('layouts/footer.ejs')  %>
-   
+  </div>
+</div>
+<script>
+  let recieverid;
+  var sender_id = '<%= user._id %>'
+  var socket = io('/user-namespace', {
+    auth: {
+      token: '<%= user._id %>'
+    }
+  })
+  $('Document').ready(function() {
+    $('.list-group-item').click(function() {
+      $('.start-head').hide();
+      $('.chat-section').show();
+      let userid = $(this).attr('data-id');
+      recieverid = userid;
+      alert(recieverid)
+    });
+  });
+  socket.on('onlineuser', function(data) {
+    $('#' + data.userid + '-status').text('online');
+    $('#' + data.userid + '-status').removeClass('offline-status');
+    $('#' + data.userid + '-status').addClass('online-status');
+  })
+  socket.on('offlineuser', function(data) {
+    $('#' + data.userid + '-status').text('Offline');
+    $('#' + data.userid + '-status').removeClass('online-status');
+    $('#' + data.userid + '-status').addClass('offline-status');
+  })
+  $('#chat-form').submit(function(event) {
+    event.preventDefault();
+    var message = $('#message').val();
+    $.ajax({
+      url: '/savechat',
+      method:'post',
+      data: {
+        sender_id: sender_id,
+        recieverid: recieverid,
+        message: message
+      }
+    }).done(function(response) {
+      if (response.success) {
+        $('#message').val(' ')
+        let chat = response.chat;
+        let html = `<div class = "current-user">
+                <h5>` + chat + `</h5>
+                </div>`
+        $('#chat-container').append(html)
+      } else {
+
+      }
+    })
+  })
+</script>
+<%- include('layouts/footer.ejs')  %>

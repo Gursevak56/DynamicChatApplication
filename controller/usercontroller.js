@@ -1,6 +1,6 @@
 const User = require('./../models/userModel');
 const securepass = require('./../middlewares/securepassword');
-
+const Chat = require('./../models/chatModel');
 module.exports={
     registerload: async (req,res)=>{
         try {
@@ -73,6 +73,28 @@ module.exports={
             res.render('dasboard',{user:req.session.user,users:users})
         } catch (error) {
             console.log(error.message)
+        }
+    },
+    savechat: async (req,res)=>{
+        try {
+        console.log('i am in savechat fucntio')
+           const newchat = new Chat({
+                sender_id:req.body.sender_id,
+                reciever_id:req.body.recieverid,
+                message:req.body.message
+            })
+           const savechat = await newchat.save();
+            res.status(200).json({
+                success:true,
+                message:'chat inserted',
+                chat:savechat.message
+            })
+        
+        } catch (error) {
+             res.status(400).json({
+                success:false,
+                message:'message send failed'
+             })
         }
     }
 }

@@ -24,6 +24,7 @@ router.get('/',auth.isLogout,usercontroller.loadlogin)
 router.post('/login',usercontroller.login)
 router.get('/logout',auth.isLogin,usercontroller.logout)
 router.get('/dashboard',auth.isLogin,usercontroller.dashboard)
+router.post('/savechat',auth.isLogin,usercontroller.savechat);
 router.all('*',(req,res)=>{
 res.redirect('/');    
 })

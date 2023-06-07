@@ -8351,3 +8351,13 @@ a[data-toggle="collapse"] {
 .offline-status{
   color:red;
 }
+.current-user{
+  text-align: right;
+  maring:10px;
+  color: black;
+}
+.dynamic-user{
+  text-align: left;
+  margin: 10px;
+  color:white
+}
