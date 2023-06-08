@@ -47,6 +47,7 @@ module.exports={
         if(!user){
             res.render('login',{message:"user and password are incorrect"});
         }
+        console.log(req.body.password)
         const passwordcheck = await securepass.comparepass(req.body.password,user.password);
         if(!passwordcheck){
             res.render('login',{message:"password and email are incorrect"});
