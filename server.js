@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const bodyparser = require('body-parser');
 const User = require('./models/userModel')
+const Chat = require('./models/chatModel');
 const ejs = require('ejs')
 const googlestretage = require('passport-google-oauth20');
 const app = express();
@@ -40,6 +41,13 @@ usb.on('connection',async function(socket){
     //chating 
     socket.on('newchat',function(data){
         socket.broadcast.emit('loadnewchat',data)
+    })
+    socket.on('existchat',async function(data){
+        var chats = await Chat.find({$or:[
+            {sender_id:data.sender_id,reciever_id:data.recieverid},
+            {sender_id:data.recieverid,reciever_id:data.sender_id}
+        ]})
+        socket.emit('chats',{chats:chats});
     })
     socket.on('disconnect',async function(){
         console.log('user disconnected')

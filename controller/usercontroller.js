@@ -88,7 +88,7 @@ module.exports={
             res.status(200).json({
                 success:true,
                 message:'chat inserted',
-                chat:savechat.message
+                chat:savechat
             })
         
         } catch (error) {

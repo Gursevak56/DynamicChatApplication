@@ -43,7 +43,7 @@
   </div>
 </div>
 <script>
-  let recieverid;
+  var recieverid;
   var sender_id = '<%= user._id %>'
   var socket = io('/user-namespace', {
     auth: {
@@ -54,8 +54,10 @@
     $('.list-group-item').click(function() {
       $('.start-head').hide();
       $('.chat-section').show();
+      
       let userid = $(this).attr('data-id');
       recieverid = userid;
+      socket.emit('existchat',{sender_id:sender_id,recieverid:recieverid});
     });
   });
   socket.on('onlineuser', function(data) {
@@ -82,23 +84,45 @@
     }).done(function(response) {
       if (response.success) {
         $('#message').val(' ')
-        let chat = response.chat;
+        let chat = response.chat.message;
         let html = `<div class = "current-user">
                 <h5>` + chat + `</h5>
                 </div>`
         $('#chat-container').append(html)
-        socket.emit('newchat',response);
+        socket.emit('newchat',response.chat);
       } else {
 
       }
     })
   })
   socket.on('loadnewchat',function(data){
-    let chat = data.chat;
+     if(sender_id == data.reciever_id && recieverid == data.sender_id){
+      let chat = data.message;
     let html = `<div class="dynamic-user">
             <h5>`+chat+`</h5>
         </div>`
         $('#chat-container').append(html)
+      }
+})
+    socket.on('chats',function(data){
+      $('#chat-container').html(' ');
+      let html = ' '
+      let chats = data.chats;
+      for(let i =0 ; i<chats.length;i++){
+        let addClass;
+        if(chats[i]['sender_id'] == sender_id){
+          addClass = 'current-user'
+        }
+        else{
+          addClass = "dynamic-user"
+        }
+        html = html+`<div class=`+addClass+`>
+            <h5>`+chats[i]['message']+`</h5>
+        </div>`
+    }
+    $('#chat-container').append(html)
   })
+      
+     
 </script>
 <%- include('layouts/footer.ejs')  %>
